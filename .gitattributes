@@ -1,0 +1,326 @@
+###############################################################################
+# Set default behavior to automatically normalize line endings.               #
+###############################################################################
+*	text=auto
+
+###############################################################################
+# Visual Studio: Set the merge driver for project and solution files.         #
+###############################################################################
+*.sln          text eol=crlf
+*.csproj       text eol=crlf
+*.vbproj       text eol=crlf
+*.vcxproj      text eol=crlf
+*.vcproj       text eol=crlf
+*.dbproj       text eol=crlf
+*.fsproj       text eol=crlf
+*.lsproj       text eol=crlf
+*.wixproj      text eol=crlf
+*.modelproj    text eol=crlf
+*.sqlproj      text eol=crlf
+*.wwaproj      text eol=crlf
+*.xproj        text eol=crlf
+*.props        text eol=crlf
+*.filters      text eol=crlf
+*.vcxitems     text eol=crlf
+
+###############################################################################
+# Source Code                                                                 #
+###############################################################################
+*.bash        text eol=lf
+*.bat         text eol=crlf
+*.cjs         text
+*.cmd         text eol=crlf
+*.coffee      text
+*.cs          text diff=csharp
+*.cshtml      text diff=html
+*.css         text diff=css
+*.csx         text diff=csharp
+*.htm         text diff=html
+*.html        text diff=html
+*.inc         text
+*.ini         text
+*.js          text
+*.json        text
+*.jsx         text
+*.less        text
+*.ls          text
+*.map         text -diff
+*.mjs         text
+*.od          text
+*.onlydata    text
+*.php         text diff=php
+*.pl          text
+*.ps1         text eol=crlf
+*.py          text diff=python
+*.razor       text diff=html
+*.rb          text diff=ruby
+*.sass        text
+*.scm         text
+*.scss        text diff=css
+*.sh          text eol=lf
+*.sql         text
+*.styl        text
+*.tag         text
+*.ts          text
+*.tsx         text
+*.xaml        text
+*.xhtml       text diff=html
+*.xml         text
+.husky/*      text eol=lf
+
+###############################################################################
+# Docker                                                                      #
+###############################################################################
+Dockerfile        text
+
+###############################################################################
+# Documentation                                                               #
+###############################################################################
+*.ipynb         text eol=lf
+*.markdown      text diff=markdown
+*.md            text diff=markdown
+*.mdown         text diff=markdown
+*.mdtext        text
+*.mdtxt         text
+*.mdwn          text diff=markdown
+*.mkd           text diff=markdown
+*.mkdn          text diff=markdown
+*.txt           text
+*COPYRIGHT*     text
+*README*        text
+AUTHORS         text
+CHANGELOG       text
+CHANGES         text
+CONTRIBUTING    text
+COPYING         text
+INSTALL         text
+LICENSE         text
+NEWS            text
+TODO            text
+copyright       text
+license         text
+readme          text
+
+###############################################################################
+# Templating                                                                  #
+###############################################################################
+*.dot           text
+*.ejs           text
+*.erb           text
+*.haml          text
+*.handlebars    text
+*.hbs           text
+*.hbt           text
+*.jade          text
+*.latte         text
+*.mustache      text
+*.njk           text
+*.phtml         text
+*.svelte        text
+*.tmpl          text
+*.tpl           text
+*.twig          text
+*.vue           text
+
+###############################################################################
+# Documents                                                                   #
+###############################################################################
+*.DOC         diff=astextplain
+*.DOCX        diff=astextplain
+*.DOT         diff=astextplain
+*.PDF         diff=astextplain
+*.RTF         diff=astextplain
+*.adoc        text
+*.bibtex      text diff=bibtex
+*.csv         text eol=crlf
+*.doc         diff=astextplain
+*.docx        diff=astextplain
+*.dot         diff=astextplain
+*.epub        diff=astextplain
+*.md          text diff=markdown
+*.mdx         text diff=markdown
+*.mustache    text
+*.pdf         diff=astextplain
+*.rtf         diff=astextplain
+*.tab         text
+*.tex         text diff=tex
+*.textile     text
+*.tsv         text
+*.txt         text
+
+###############################################################################
+# Configuration                                                               #
+###############################################################################
+*.cnf                text
+*.conf               text
+*.config             text
+*.lock               text -diff
+*.toml               text
+*.yaml               text
+*.yml                text
+.editorconfig        text
+.env                 text
+.gitattributes       text
+.gitconfig           text
+.htaccess            text
+.prettierrc          text
+Makefile             text
+browserslist         text
+makefile             text
+package-lock.json    text eol=lf -diff
+package.json         text eol=lf
+pnpm-lock.yaml       text eol=lf -diff
+yarn.lock            text -diff
+
+###############################################################################
+# Fixes syntax highlighting on GitHub to allow comments.                      #
+###############################################################################
+tsconfig.json     linguist-language=JSON-with-Comments
+
+###############################################################################
+# Heroku                                                                      #
+###############################################################################
+Procfile    text
+
+###############################################################################
+# Graphics                                                                    #
+###############################################################################
+*.ai      binary
+*.bmp     binary
+*.eps     binary
+*.gif     binary
+*.gifv    binary
+*.ico     binary
+*.jng     binary
+*.jp2     binary
+*.jpeg    binary
+*.jpg     binary
+*.jpx     binary
+*.jxr     binary
+*.pdf     binary
+*.png     binary
+*.psb     binary
+*.psd     binary
+*.svgz    binary
+*.tif     binary
+*.tiff    binary
+*.wbmp    binary
+*.webp    binary
+
+###############################################################################
+# SVG treated as an asset (binary) by default.                                #
+###############################################################################
+*.svg             text
+
+###############################################################################
+# Audio                                                                       #
+###############################################################################
+*.kar     binary
+*.m4a     binary
+*.mid     binary
+*.midi    binary
+*.mp3     binary
+*.ogg     binary
+*.ra      binary
+
+###############################################################################
+# Video                                                                       #
+###############################################################################
+*.3gp     binary
+*.3gpp    binary
+*.as      binary
+*.asf     binary
+*.asx     binary
+*.avi     binary
+*.fla     binary
+*.flv     binary
+*.m4v     binary
+*.mng     binary
+*.mov     binary
+*.mp4     binary
+*.mpeg    binary
+*.mpg     binary
+*.ogv     binary
+*.swc     binary
+*.swf     binary
+*.webm    binary
+
+###############################################################################
+# Archives                                                                    #
+###############################################################################
+*.7z       binary
+*.Z        binary
+*.bz       binary
+*.bz2      binary
+*.bzip2    binary
+*.gz       binary
+*.lz       binary
+*.lzma     binary
+*.rar      binary
+*.tar      binary
+*.taz      binary
+*.tbz      binary
+*.tbz2     binary
+*.tgz      binary
+*.tlz      binary
+*.txz      binary
+*.xz       binary
+*.zip      binary
+*.zst      binary
+
+###############################################################################
+# Fonts                                                                       #
+###############################################################################
+*.eot      binary
+*.otf      binary
+*.ttf      binary
+*.woff     binary
+*.woff2    binary
+
+###############################################################################
+# Executables                                                                 #
+###############################################################################
+*.exe    binary
+*.pyc    binary
+
+###############################################################################
+# Prevents massive diffs caused by vendored, minified files.                  #
+###############################################################################
+**/.yarn/plugins/**    binary
+**/.yarn/releases/**   binary
+
+###############################################################################
+# Text files where line endings should be preserved                           #
+###############################################################################
+*.patch    -text
+
+###############################################################################
+# RC files (like .babelrc or .eslintrc)                                       #
+###############################################################################
+*.*rc    text
+
+###############################################################################
+# Ignore files (like .npmignore or .gitignore)                                #
+###############################################################################
+*.*ignore    text
+
+###############################################################################
+# Prevents massive diffs from built files                                     #
+###############################################################################
+bin/*     binary
+dist/*    binary
+obj/*     binary
+
+###############################################################################
+# Exclude files from exporting.                                               #
+###############################################################################
+.gitattributes export-ignore
+.gitignore     export-ignore
+.gitkeep       export-ignore
+
+###############################################################################
+# Enable syntax highlighting for files with `.gitattributes` extensions.      #
+###############################################################################
+*.gitattributes linguist-language=gitattributes
+*.gitattributes linguist-detectable=true
+*.gitattributes linguist-documentation=false
