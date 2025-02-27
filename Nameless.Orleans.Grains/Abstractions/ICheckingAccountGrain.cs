@@ -2,5 +2,7 @@
 
 public interface ICheckingAccountGrain : IGrainWithGuidKey {
     Task InitializeAsync(decimal openingBalance);
-    Task<decimal> GetBalance();
+    Task<decimal> GetBalanceAsync();
+    Task DebitAsync(decimal value);
+    Task CreditAsync(decimal value);
 }

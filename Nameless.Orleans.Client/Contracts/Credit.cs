@@ -3,6 +3,7 @@
 namespace Nameless.Orleans.Client.Contracts;
 
 [DataContract]
-public record CreateAccount {
-    [DataMember] public decimal OpeningBalance { get; init; }
+public record Credit {
+    [DataMember]
+    public decimal Amount { get; init; }
 }

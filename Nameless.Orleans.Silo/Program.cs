@@ -1,15 +1,15 @@
 ﻿using Azure.Data.Tables;
+using Azure.Storage.Blobs;
 using Microsoft.Extensions.Hosting;
 using Orleans.Configuration;
-using Orleans.Hosting;
 
 namespace Nameless.Orleans.Silo;
 
 public static class Program {
-    public static async Task Main(string[] args) {
+    public static async Task Main(string[] args) =>
         await Host.CreateApplicationBuilder()
                   .UseOrleans(server => {
-                      server.UseAzureStorageClustering(configureOptions: options => {
+                      server.UseAzureStorageClustering(options => {
                           options.TableServiceClient = new TableServiceClient("UseDevelopmentStorage=true;");
                       });
 
@@ -22,8 +22,20 @@ public static class Program {
                           options.CollectionQuantum = TimeSpan.FromSeconds(20);
                           options.CollectionAge = TimeSpan.FromSeconds(60);
                       });
+
+                      server.AddAzureTableGrainStorage("tableStorage", options => {
+                          options.TableServiceClient = new TableServiceClient("UseDevelopmentStorage=true;");
+                      });
+
+                      server.AddAzureBlobGrainStorage("blobStorage", options => {
+                          options.BlobServiceClient = new BlobServiceClient("UseDevelopmentStorage=true;");
+                      });
+
+                      //// The default
+                      //server.AddAzureTableGrainStorageAsDefault(options => {
+                      //    options.TableServiceClient = new TableServiceClient("UseDevelopmentStorage=true;");
+                      //});
                   })
                   .Build()
                   .RunAsync();
-    }
 }

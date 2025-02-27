@@ -10,7 +10,7 @@ public class Program {
         var builder = WebApplication.CreateBuilder(args);
 
         builder.Host.UseOrleansClient((_, client) => {
-            client.UseAzureStorageClustering(configureOptions: options => {
+            client.UseAzureStorageClustering(options => {
                 options.TableServiceClient = new TableServiceClient("UseDevelopmentStorage=true;");
             });
 
@@ -24,7 +24,7 @@ public class Program {
 
         app.MapGet("/account/{accountId}/balance", async (Guid accountId, IClusterClient clusterClient) => {
             var checkingAccountGrain = clusterClient.GetGrain<ICheckingAccountGrain>(accountId);
-            var balance = await checkingAccountGrain.GetBalance();
+            var balance = await checkingAccountGrain.GetBalanceAsync();
 
             return TypedResults.Ok(balance);
         });
@@ -35,7 +35,40 @@ public class Program {
 
             await checkingAccountGrain.InitializeAsync(createAccount.OpeningBalance);
 
-            return TypedResults.Created($"/account/{accountId}");
+            return TypedResults.Created($"/account/{accountId}", new { AccountId = accountId });
+        });
+
+        app.MapPost("/account/{accountId}/debit", async (Guid accountId, Debit input, IClusterClient clusterClient) => {
+            var checkingAccountGrain = clusterClient.GetGrain<ICheckingAccountGrain>(accountId);
+
+            await checkingAccountGrain.DebitAsync(input.Amount);
+
+            return TypedResults.Ok(input);
+        });
+
+        app.MapPost("/account/{accountId}/credit", async (Guid accountId, Credit input, IClusterClient clusterClient) => {
+            var checkingAccountGrain = clusterClient.GetGrain<ICheckingAccountGrain>(accountId);
+
+            await checkingAccountGrain.CreditAsync(input.Amount);
+
+            return TypedResults.Ok(input);
+        });
+
+        app.MapPost("/atm", async (CreateAtm createAtm, IClusterClient clusterClient) => {
+            var atmId = Guid.NewGuid();
+            var atmGrain = clusterClient.GetGrain<IAtmGrain>(atmId);
+
+            await atmGrain.InitializeAsync(createAtm.OpeningBalance);
+
+            return TypedResults.Created($"/atm/{atmId}", new { AtmId = atmId });
+        });
+
+        app.MapPost("/atm/{atmId}/withdraw", async (Guid atmId, AtmWithdraw atmWithdraw, IClusterClient clusterClient) => {
+            var atmGrain = clusterClient.GetGrain<IAtmGrain>(atmId);
+
+            await atmGrain.WithdrawAsync(atmWithdraw.AccountId, atmWithdraw.Amount);
+
+            return TypedResults.Ok(atmWithdraw);
         });
 
         app.Run();
