@@ -1,13 +1,18 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35527.113 d17.12
+VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nameless.Orleans.Client", "Nameless.Orleans.Client\Nameless.Orleans.Client.csproj", "{CBF03431-B3E9-4F48-B1EB-914D160930A3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nameless.Orleans.Grains", "Nameless.Orleans.Grains\Nameless.Orleans.Grains.csproj", "{F13D80D5-290A-4976-8457-34B2904463B2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nameless.Orleans.Silo", "Nameless.Orleans.Silo\Nameless.Orleans.Silo.csproj", "{DB20CA79-6551-4A1F-A475-A3D3EBCB748B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D5DFD0D7-A39F-4C3F-A05E-0D6C2E95EB79}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
