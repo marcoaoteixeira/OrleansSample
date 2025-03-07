@@ -1,36 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Nameless.Orleans.Grains.Abstractions;
+﻿using Nameless.Orleans.Grains.Abstractions;
 using Nameless.Orleans.Grains.States;
+using Orleans.Concurrency;
+using Orleans.Transactions.Abstractions;
 
 namespace Nameless.Orleans.Grains;
 
+[Reentrant]
 public class AtmGrain : Grain, IAtmGrain {
-    private readonly IPersistentState<AtmState> _atmState;
+    private readonly ITransactionalState<AtmState> _atmState;
 
     public AtmGrain(
-        [PersistentState(nameof(AtmState), "tableStorage")]
-        IPersistentState<AtmState> atmState) {
+        [TransactionalState(nameof(AtmState))]
+        ITransactionalState<AtmState> atmState) {
         _atmState = atmState;
     }
 
-    public async Task InitializeAsync(decimal openingBalance) {
-        _atmState.State.Id = this.GetGrainId().GetGuidKey();
-        _atmState.State.Balance = openingBalance;
+    public Task InitializeAsync(decimal openingBalance)
+        => _atmState.PerformUpdate(state => {
+            state.Id = this.GetGrainId().GetGuidKey();
+            state.Balance = openingBalance;
+        });
 
-        await _atmState.WriteStateAsync();
-    }
+    public async Task WithdrawAsync(Guid accountId, decimal amount) =>
+        //var accountGrain = GrainFactory.GetGrain<IAccountGrain>(accountId);
+        //await accountGrain.DebitAsync(amount);
+        await _atmState.PerformUpdate(state => {
+            state.Balance -= amount;
+        });
 
-    public async Task WithdrawAsync(Guid accountId, decimal amount) {
-        var accountGrain = GrainFactory.GetGrain<ICheckingAccountGrain>(accountId);
-
-        await accountGrain.DebitAsync(amount);
-
-        _atmState.State.Balance -= amount;
-
-        await _atmState.WriteStateAsync();
-    }
+    public Task<decimal> GetCurrentBalanceAsync()
+        => _atmState.PerformRead(state => state.Balance);
 }

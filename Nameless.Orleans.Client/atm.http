@@ -1,0 +1,59 @@
+# Create a new ATM
+# @name CreateAtm
+
+POST {{HostAddress}}/atm
+Content-Type: application/json
+
+{ 
+  "OpeningBalance": 15000.00
+}
+
+###
+
+# Get ATM current balance
+
+GET {{HostAddress}}/atm/{{CreateAtm.response.body.$.AtmId}}/balance
+
+###
+
+# Create Account
+# @name CreateAccount
+
+POST {{HostAddress}}/account
+Content-Type: application/json
+
+{ 
+  "OpeningBalance": 5000.00
+}
+
+###
+
+# Get Account current balance
+
+GET {{HostAddress}}/account/{{CreateAccount.response.body.$.AccountId}}/balance
+
+###
+
+# Withdraw from ATM
+
+POST {{HostAddress}}/atm/{{CreateAtm.response.body.$.AtmId}}/withdraw
+Content-Type: application/json
+
+{ 
+  "AccountId": "{{CreateAccount.response.body.$.AccountId}}",
+  "Amount": 50.00
+}
+
+###
+
+# Add recurring payment for Account
+
+POST {{HostAddress}}/account/{{CreateAccount.response.body.$.AccountId}}/recurring_payment
+Content-Type: application/json
+
+{ 
+  "Amount": 5.00,
+  "PeriodInMinutes": 1
+}
+
+###

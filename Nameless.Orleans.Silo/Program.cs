@@ -31,6 +31,20 @@ public static class Program {
                           options.BlobServiceClient = new BlobServiceClient("UseDevelopmentStorage=true;");
                       });
 
+                      server.UseAzureTableReminderService(configure => {
+                          configure.Configure(opts => {
+                              opts.TableServiceClient = new TableServiceClient("UseDevelopmentStorage=true;");
+                          });
+                      });
+
+                      server.AddAzureTableTransactionalStateStorageAsDefault(configure => {
+                          configure.Configure(opts => {
+                              opts.TableServiceClient = new TableServiceClient("UseDevelopmentStorage=true;");
+                          });
+                      });
+
+                      server.UseTransactions();
+
                       //// The default
                       //server.AddAzureTableGrainStorageAsDefault(options => {
                       //    options.TableServiceClient = new TableServiceClient("UseDevelopmentStorage=true;");
