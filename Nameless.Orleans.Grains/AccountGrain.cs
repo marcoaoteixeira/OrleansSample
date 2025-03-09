@@ -1,4 +1,6 @@
-﻿using Nameless.Orleans.Grains.Abstractions;
+﻿using Nameless.Orleans.Core;
+using Nameless.Orleans.Grains.Abstractions;
+using Nameless.Orleans.Grains.Events;
 using Nameless.Orleans.Grains.States;
 using Orleans.Concurrency;
 using Orleans.Transactions.Abstractions;
@@ -17,7 +19,7 @@ public class AccountGrain : Grain, IAccountGrain, IRemindable {
         [TransactionalState(nameof(BalanceState))]
         ITransactionalState<BalanceState> balanceState,
 
-        [PersistentState(nameof(AccountState), "blobStorage")]
+        [PersistentState(nameof(AccountState), StorageNames.BlobStorage)]
         IPersistentState<AccountState> accountState) {
         _transactionClient = transactionClient;
         _balanceState = balanceState;
@@ -42,15 +44,21 @@ public class AccountGrain : Grain, IAccountGrain, IRemindable {
     public Task<decimal> GetCurrentBalanceAsync()
         => _balanceState.PerformRead(state => state.Amount);
 
-    public Task DebitAsync(decimal value)
-        => _balanceState.PerformUpdate(state => {
+    public async Task DebitAsync(decimal value) {
+        await _balanceState.PerformUpdate(state => {
             state.Amount -= value;
         });
 
-    public Task CreditAsync(decimal value)
-        => _balanceState.PerformUpdate(state => {
+        await PublishBalanceChangeEventAsync();
+    }
+
+    public async Task CreditAsync(decimal value) {
+        await _balanceState.PerformUpdate(state => {
             state.Amount += value;
         });
+
+        await PublishBalanceChangeEventAsync();
+    }
 
     public async Task AddRecurringPaymentAsync(decimal amount, int periodInMinutes) {
         var recurringPayment = new RecurringPayment {
@@ -82,5 +90,18 @@ public class AccountGrain : Grain, IAccountGrain, IRemindable {
 
         return _transactionClient.RunTransaction(transactionOption: TransactionOption.Create,
                                                  transactionDelegate: () => DebitAsync(recurringPayment.Amount));
+    }
+
+    private async Task PublishBalanceChangeEventAsync() {
+        var accountId = this.GetGrainId().GetGuidKey();
+        var streamProvider = this.GetStreamProvider(StreamNames.StreamProvider);
+        var streamId = StreamId.Create(Constants.BalanceStreamNamespace, accountId);
+        var stream = streamProvider.GetStream<BalanceChangeEvent>(streamId);
+        var currentBalance = await GetCurrentBalanceAsync();
+
+        await stream.OnNextAsync(new BalanceChangeEvent {
+            AccountId = accountId,
+            CurrentBalance = currentBalance
+        });
     }
 }

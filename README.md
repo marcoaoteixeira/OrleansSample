@@ -7,6 +7,9 @@ Microsoft Orleans to demonstrate the Actor Pattern.
 
 Instructions below will show your the way to get things working.
 
+Please give a thumbup to this guy here [jumpstartCS](https://www.youtube.com/@jumpstartCS).
+He is responsible for what you see in this repository. Also see his video series on the topic: [About Microsoft Orleans](https://www.youtube.com/watch?v=JmJxi6hEA-w&list=PLalrWAGybpB9mEE84ybHSCxUxPq9ToaZE)
+
 ### Pre-requirements
 
 If you have a Microsoft Azure subscription you can use it or if you more like

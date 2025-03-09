@@ -1,5 +1,6 @@
 using Azure.Data.Tables;
 using Nameless.Orleans.Client.Contracts;
+using Nameless.Orleans.Core;
 using Nameless.Orleans.Grains.Abstractions;
 using Orleans.Configuration;
 
@@ -11,12 +12,12 @@ public class Program {
 
         builder.Host.UseOrleansClient((_, client) => {
             client.UseAzureStorageClustering(options => {
-                options.TableServiceClient = new TableServiceClient("UseDevelopmentStorage=true;");
+                options.TableServiceClient = new TableServiceClient(Constants.ConnectionString);
             });
 
             client.Configure<ClusterOptions>(options => {
-                options.ClusterId = "Nameless_Orleans_Cluster";
-                options.ServiceId = "Nameless_Orleans_Service";
+                options.ClusterId = Constants.ClusterId;
+                options.ServiceId = Constants.ServiceId;
             });
 
             client.UseTransactions();
@@ -31,7 +32,10 @@ public class Program {
 
             await atmGrain.InitializeAsync(createAtm.OpeningBalance);
 
-            return TypedResults.Created($"/atm/{atmId}", new { AtmId = atmId });
+            return TypedResults.Created($"/atm/{atmId}", new {
+                AtmId = atmId,
+                createAtm.OpeningBalance
+            });
         });
 
         // Retrieves the ATM current balance
@@ -49,11 +53,18 @@ public class Program {
         });
 
         // Withdraw from ATM
-        app.MapPost("/atm/{atmId}/withdraw", async (Guid atmId, AtmWithdraw atmWithdraw, IClusterClient clusterClient) => {
+        app.MapPost("/atm/{atmId}/withdraw", async (Guid atmId,
+                                                    AtmWithdraw atmWithdraw,
+                                                    IClusterClient clusterClient,
+                                                    ITransactionClient transactionClient) => {
             var atmGrain = clusterClient.GetGrain<IAtmGrain>(atmId);
             var accountGrain = clusterClient.GetGrain<IAccountGrain>(atmWithdraw.AccountId);
 
-            await atmGrain.WithdrawAsync(atmWithdraw.AccountId, atmWithdraw.Amount);
+            await transactionClient.RunTransaction(TransactionOption.Create, async () => {
+                await atmGrain.WithdrawAsync(atmWithdraw.AccountId, atmWithdraw.Amount);
+                await accountGrain.DebitAsync(atmWithdraw.Amount);
+            });
+
             var currentAtmBalance = await atmGrain.GetCurrentBalanceAsync();
             var currentAccountBalance = await accountGrain.GetCurrentBalanceAsync();
 
@@ -137,6 +148,30 @@ public class Program {
                 AccountId = accountId,
                 RecurringAmout = input.Amount,
                 RecurringPeriodInMinutes = input.PeriodInMinutes
+            });
+        });
+
+        // Get customer net worth
+        app.MapGet("/customer/{customerId}/net_worth", async (Guid customerId, IClusterClient clusterClient) => {
+            var customerGrain = clusterClient.GetGrain<ICustomerGrain>(customerId);
+
+            var netWorth = await customerGrain.GetNetWorthAsync(customerId);
+
+            return TypedResults.Ok(new {
+                CustomerId = customerId,
+                NetWorth = netWorth
+            });
+        });
+
+        // Get customer net worth
+        app.MapPost("/customer/{customerId:guid}/add_account", async (Guid customerId, CustomerAccount customerAccount, IClusterClient clusterClient) => {
+            var customerGrain = clusterClient.GetGrain<ICustomerGrain>(customerId);
+
+            await customerGrain.AddAccountAsync(customerAccount.AccountId);
+
+            return TypedResults.Ok(new {
+                CustomerId = customerId,
+                customerAccount.AccountId
             });
         });
 

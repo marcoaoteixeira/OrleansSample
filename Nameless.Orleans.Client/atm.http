@@ -16,24 +16,6 @@ GET {{HostAddress}}/atm/{{CreateAtm.response.body.$.AtmId}}/balance
 
 ###
 
-# Create Account
-# @name CreateAccount
-
-POST {{HostAddress}}/account
-Content-Type: application/json
-
-{ 
-  "OpeningBalance": 5000.00
-}
-
-###
-
-# Get Account current balance
-
-GET {{HostAddress}}/account/{{CreateAccount.response.body.$.AccountId}}/balance
-
-###
-
 # Withdraw from ATM
 
 POST {{HostAddress}}/atm/{{CreateAtm.response.body.$.AtmId}}/withdraw
@@ -46,14 +28,72 @@ Content-Type: application/json
 
 ###
 
-# Add recurring payment for Account
+# Create Account
+# @name CreateAccount
+
+POST {{HostAddress}}/account
+Content-Type: application/json
+
+{ 
+  "OpeningBalance": 5000.00
+}
+
+###
+
+# Retrieves Account current balance
+
+GET {{HostAddress}}/account/{{CreateAccount.response.body.$.AccountId}}/balance
+
+###
+
+# Creates a debit in an account
+
+POST {{HostAddress}}/account/{{CreateAccount.response.body.$.AccountId}}/debit
+Content-Type: application/json
+
+{ 
+  "Amount": 15.00
+}
+
+###
+
+# Creates a credit into an account
+
+POST {{HostAddress}}/account/{{CreateAccount.response.body.$.AccountId}}/credit
+Content-Type: application/json
+
+{ 
+  "Amount": 30.00
+}
+
+###
+
+# Creates a recurring payment on an Account
 
 POST {{HostAddress}}/account/{{CreateAccount.response.body.$.AccountId}}/recurring_payment
 Content-Type: application/json
 
 { 
-  "Amount": 5.00,
+  "Amount": 10.00,
   "PeriodInMinutes": 1
+}
+
+###
+
+# Get customer net worth
+# For this example's sake, the customer ID will be the same as account ID
+
+GET {{HostAddress}}/customer/{{CreateAccount.response.body.$.AccountId}}/net_worth
+
+###
+
+# Add account to customer.
+
+POST {{HostAddress}}/customer/{{CreateAccount.response.body.$.AccountId}}/add_account
+Content-Type: application/json
+
+{
+  "AccountId": "{{CreateAccount.response.body.$.AccountId}}"
 }
 
 ###

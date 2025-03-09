@@ -11,7 +11,12 @@
     <PackageReference Include="Microsoft.Orleans.Reminders.AzureStorage" Version="9.1.2" />
     <PackageReference Include="Microsoft.Orleans.Runtime" Version="9.1.2" />
     <PackageReference Include="Microsoft.Orleans.Sdk" Version="9.1.2" />
+    <PackageReference Include="Microsoft.Orleans.Streaming" Version="9.1.2" />
     <PackageReference Include="Microsoft.Orleans.Transactions" Version="9.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Nameless.Orleans.Core\Nameless.Orleans.Core.csproj" />
   </ItemGroup>
 
 </Project>
