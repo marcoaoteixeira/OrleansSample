@@ -3,14 +3,17 @@ using Azure.Storage.Blobs;
 using Azure.Storage.Queues;
 using Microsoft.Extensions.Hosting;
 using Nameless.Orleans.Core;
+using Nameless.Orleans.Grains.Filters;
 using Orleans.Configuration;
 
 namespace Nameless.Orleans.Silo;
 
 public static class Program {
     public static async Task Main(string[] args)
-        => await Host.CreateApplicationBuilder()
+        => await Host.CreateDefaultBuilder()
                      .UseOrleans(server => {
+                         server.AddIncomingGrainCallFilter<LoggingIncomingGrainCallFilter>();
+
                          server.UseAzureStorageClustering(options => {
                              options.TableServiceClient = new TableServiceClient(Constants.ConnectionString);
                          });
@@ -20,19 +23,14 @@ public static class Program {
                              options.ServiceId = Constants.ServiceId;
                          });
 
-                         server.Configure<GrainCollectionOptions>(options => {
-                             options.CollectionQuantum = TimeSpan.FromSeconds(20);
-                             options.CollectionAge = TimeSpan.FromSeconds(60);
-                         });
+                         //server.Configure<GrainCollectionOptions>(options => {
+                         //    options.CollectionQuantum = TimeSpan.FromSeconds(20);
+                         //    options.CollectionAge = TimeSpan.FromSeconds(60);
+                         //});
 
                          server.AddAzureTableGrainStorage(StorageNames.TableStorage, options => {
                              options.TableServiceClient = new TableServiceClient(Constants.ConnectionString);
                          });
-
-                         //// The default
-                         //server.AddAzureTableGrainStorageAsDefault(options => {
-                         //    options.TableServiceClient = new TableServiceClient(Constants.ConnectionString);
-                         //});
 
                          server.AddAzureBlobGrainStorage(StorageNames.BlobStorage, options => {
                              options.BlobServiceClient = new BlobServiceClient(Constants.ConnectionString);
@@ -52,18 +50,15 @@ public static class Program {
 
                          server.UseTransactions();
 
-                         server.AddAzureQueueStreams(StreamNames.StreamProvider, configure => {
-                             configure.Configure(opts => {
-                                 opts.QueueServiceClient = new QueueServiceClient(Constants.ConnectionString);
-                             });
-                         });
-
-                         server.AddAzureTableGrainStorage(StorageNames.PubSubStore, configure => {
-                             configure.Configure(opts => {
-                                 opts.TableServiceClient = new TableServiceClient(Constants.ConnectionString);
-                             });
-                         });
+                         //server.AddAzureQueueStreams(StreamNames.StreamProvider, configure => {
+                         //    configure.Configure(opts => {
+                         //        opts.QueueServiceClient = new QueueServiceClient(Constants.ConnectionString);
+                         //    });
+                         //}).AddAzureTableGrainStorage(StorageNames.PubSubStore, configure => {
+                         //    configure.Configure(opts => {
+                         //        opts.TableServiceClient = new TableServiceClient(Constants.ConnectionString);
+                         //    });
+                         //});
                      })
-                     .Build()
-                     .RunAsync();
+                     .RunConsoleAsync();
 }

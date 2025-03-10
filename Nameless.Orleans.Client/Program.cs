@@ -2,6 +2,7 @@ using Azure.Data.Tables;
 using Nameless.Orleans.Client.Contracts;
 using Nameless.Orleans.Core;
 using Nameless.Orleans.Grains.Abstractions;
+using Nameless.Orleans.Grains.Filters;
 using Orleans.Configuration;
 
 namespace Nameless.Orleans.Client;
@@ -19,6 +20,8 @@ public class Program {
                 options.ClusterId = Constants.ClusterId;
                 options.ServiceId = Constants.ServiceId;
             });
+
+            client.AddOutgoingGrainCallFilter<LoggingOutgoingGrainCallFilter>();
 
             client.UseTransactions();
         });

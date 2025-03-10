@@ -5,13 +5,14 @@ using Orleans.Concurrency;
 
 namespace Nameless.Orleans.Grains;
 
-[StatelessWorker(maxLocalWorkers: 3)]
+[StatelessWorker]
 public class StatelessTransferGrain : Grain, IStatelessTransferGrain {
     private readonly ITransactionClient _transactionClient;
     private readonly IPersistentState<StatelessTransferState> _statelessTransferState;
 
     public StatelessTransferGrain(
         ITransactionClient transactionClient,
+
         [PersistentState(nameof(StatelessTransferState), StorageNames.TableStorage)]
         IPersistentState<StatelessTransferState> statelessTransferState) {
         _transactionClient = transactionClient;
