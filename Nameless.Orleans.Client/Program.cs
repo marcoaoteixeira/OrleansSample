@@ -175,6 +175,19 @@ public class Program {
             });
         });
 
+        // Creates a recurring payment on an Account
+        app.MapPost("/transfer", async (Transfer transfer, IClusterClient clusterClient) => {
+            // the stateless transfer grain do not have a property ID
+            // it's just a worker, Orleans will choose the correct grain to initialize.
+            var statelessTransferGrain = clusterClient.GetGrain<IStatelessTransferGrain>(primaryKey: 0);
+
+            await statelessTransferGrain.ProcessTransferAsync(transfer.FromAccountId,
+                                                              transfer.ToAccountId,
+                                                              transfer.Amount);
+
+            return TypedResults.Ok(transfer);
+        });
+
         app.Run();
     }
 }

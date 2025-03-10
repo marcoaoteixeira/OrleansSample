@@ -97,3 +97,16 @@ Content-Type: application/json
 }
 
 ###
+
+# Executes transfer between accounts (stateless grain example)
+
+POST {{HostAddress}}/transfer
+Content-Type: application/json
+
+{
+  "FromAccountId": "1cb83fb9-1cd9-4df7-9dc1-b48612a176d5",
+  "ToAccountId": "9f5f8f02-c1dd-45b8-8859-0fca672bddaa",
+  "Amount": 123.00
+}
+
+###
