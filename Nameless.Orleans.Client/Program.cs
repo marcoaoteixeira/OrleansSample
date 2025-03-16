@@ -191,6 +191,36 @@ public class Program {
             return TypedResults.Ok(transfer);
         });
 
+        // Give reward
+        app.MapPost("/account/{accountId}/reward", async (Guid accountId, IClusterClient clusterClient) => {
+            var accountGrain = clusterClient.GetGrain<IAccountGrain>(accountId);
+
+            await accountGrain.GiveRewardAsync();
+
+            return TypedResults.NoContent();
+        });
+
+        // Cancel work
+        app.MapPost("/account/{accountId}/cancelwork", async (Guid accountId, IClusterClient clusterClient) => {
+            var accountGrain = clusterClient.GetGrain<IAccountGrain>(accountId);
+
+            var cts = new GrainCancellationTokenSource();
+
+            var longRunningTask = accountGrain.ExecuteLongRunningTaskAsync(cts.Token, periodInSeconds: 15);
+
+            await Task.WhenAll(longRunningTask, CancelWork());
+
+            return TypedResults.Ok(new {
+                Message = longRunningTask.Result
+            });
+
+            async Task CancelWork() {
+                await Task.Delay(TimeSpan.FromSeconds(5));
+
+                await cts.Cancel();
+            }
+        });
+
         app.Run();
     }
 }

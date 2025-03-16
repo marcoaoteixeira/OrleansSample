@@ -3,6 +3,7 @@ using Nameless.Orleans.Grains.Abstractions;
 using Nameless.Orleans.Grains.Events;
 using Nameless.Orleans.Grains.States;
 using Orleans.Concurrency;
+using Orleans.Runtime;
 using Orleans.Transactions.Abstractions;
 
 namespace Nameless.Orleans.Grains;
@@ -74,6 +75,22 @@ public class AccountGrain : Grain, IAccountGrain, IRemindable {
         await this.RegisterOrUpdateReminder(reminderName: $"{nameof(RecurringPayment)}::{recurringPayment.Id}",
                                             dueTime: recurringPayment.Period,
                                             period: recurringPayment.Period);
+    }
+
+    public async Task GiveRewardAsync() {
+        await Task.Delay(TimeSpan.FromSeconds(2));
+
+        throw new NotSupportedException("This method cannot be called.");
+    }
+
+    public async Task<string> ExecuteLongRunningTaskAsync(GrainCancellationToken grainCancellationToken, long periodInSeconds) {
+        try {
+            await Task.Delay(TimeSpan.FromSeconds(periodInSeconds), grainCancellationToken.CancellationToken);
+
+            return "Done!";
+        } catch (TaskCanceledException) {
+            return "Canceled!";
+        }
     }
 
     public Task ReceiveReminder(string reminderName, TickStatus status) {

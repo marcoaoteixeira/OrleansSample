@@ -9,9 +9,9 @@ public class LoggingOutgoingGrainCallFilter : IOutgoingGrainCallFilter {
         _logger = logger;
     }
 
-    public async Task Invoke(IOutgoingGrainCallContext context) {
-        await context.Invoke();
-
+    public Task Invoke(IOutgoingGrainCallContext context) {
         _logger.LogInformation($"Outgoing Silo Filter: Received grain call on '{context.Grain}' to '{context.MethodName}' method");
+
+        return context.Invoke();
     }
 }

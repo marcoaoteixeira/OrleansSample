@@ -50,15 +50,15 @@ public static class Program {
 
                          server.UseTransactions();
 
-                         //server.AddAzureQueueStreams(StreamNames.StreamProvider, configure => {
-                         //    configure.Configure(opts => {
-                         //        opts.QueueServiceClient = new QueueServiceClient(Constants.ConnectionString);
-                         //    });
-                         //}).AddAzureTableGrainStorage(StorageNames.PubSubStore, configure => {
-                         //    configure.Configure(opts => {
-                         //        opts.TableServiceClient = new TableServiceClient(Constants.ConnectionString);
-                         //    });
-                         //});
+                         server.AddAzureQueueStreams(StreamNames.StreamProvider, configure => {
+                             configure.Configure(opts => {
+                                 opts.QueueServiceClient = new QueueServiceClient(Constants.ConnectionString);
+                             });
+                         }).AddAzureTableGrainStorage(StorageNames.PubSubStore, configure => {
+                             configure.Configure(opts => {
+                                 opts.TableServiceClient = new TableServiceClient(Constants.ConnectionString);
+                             });
+                         });
                      })
                      .RunConsoleAsync();
 }

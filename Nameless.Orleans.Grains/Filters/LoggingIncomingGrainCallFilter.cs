@@ -10,9 +10,9 @@ public class LoggingIncomingGrainCallFilter : IIncomingGrainCallFilter
         _logger = logger;
     }
 
-    public async Task Invoke(IIncomingGrainCallContext context) {
-        await context.Invoke();
-
+    public Task Invoke(IIncomingGrainCallContext context) {
         _logger.LogInformation($"Incoming Silo Filter: Received grain call on '{context.Grain}' to '{context.MethodName}' method");
+        
+        return context.Invoke();
     }
 }

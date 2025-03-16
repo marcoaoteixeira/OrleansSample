@@ -2,6 +2,7 @@
 using Nameless.Orleans.Grains.Abstractions;
 using Nameless.Orleans.Grains.Events;
 using Nameless.Orleans.Grains.States;
+using Orleans.Runtime;
 using Orleans.Streams;
 
 namespace Nameless.Orleans.Grains;
@@ -40,6 +41,8 @@ public class CustomerGrain : Grain, ICustomerGrain, IAsyncObserver<BalanceChange
 
         return _customerState.WriteStateAsync();
     }
+
+    public Task OnCompletedAsync() => Task.CompletedTask;
 
     public Task OnErrorAsync(Exception ex) => Task.CompletedTask;
 

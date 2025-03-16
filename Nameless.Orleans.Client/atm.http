@@ -40,6 +40,20 @@ Content-Type: application/json
 
 ###
 
+# Give reward to account
+
+POST {{HostAddress}}/account/{{CreateAccount.response.body.$.AccountId}}/reward
+Content-Type: application/json
+
+###
+
+# Cancel long running work
+
+POST {{HostAddress}}/account/{{CreateAccount.response.body.$.AccountId}}/cancelwork
+Content-Type: application/json
+
+###
+
 # Retrieves Account current balance
 
 GET {{HostAddress}}/account/{{CreateAccount.response.body.$.AccountId}}/balance

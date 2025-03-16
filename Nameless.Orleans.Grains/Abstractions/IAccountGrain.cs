@@ -1,4 +1,6 @@
-﻿namespace Nameless.Orleans.Grains.Abstractions;
+﻿using Orleans.Concurrency;
+
+namespace Nameless.Orleans.Grains.Abstractions;
 
 public interface IAccountGrain : IGrainWithGuidKey {
     [Transaction(TransactionOption.Create)]
@@ -17,4 +19,10 @@ public interface IAccountGrain : IGrainWithGuidKey {
     Task CreditAsync(decimal value);
     
     Task AddRecurringPaymentAsync(decimal amount, int periodInMinutes);
+
+    // Fire & Forget: Try to remove the annotation (OneWay) and see what happens.
+    [OneWay]
+    Task GiveRewardAsync();
+
+    Task<string> ExecuteLongRunningTaskAsync(GrainCancellationToken grainCancellationToken, long periodInSeconds);
 }
